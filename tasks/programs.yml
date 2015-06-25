@@ -1,0 +1,86 @@
+---
+
+- name: install priorited packages
+  apt: name={{ item }} state=present
+  with_items:
+    - build-essential
+    - libevent-dev
+    - python-dev
+    - python-pycurl
+    - python-setuptools
+    - redis-server
+    - postfix
+
+- name: Add PHP5 repo
+  apt_repository: repo=ppa:ondrej/php5 update_cache=yes
+
+- name: install php packages
+  apt: name={{ item }} state=present
+  with_items:
+    - php5
+    - php5-cli
+    - php5-curl
+    - php5-fpm
+    - php5-intl
+    - php5-mcrypt
+    - php5-mysql
+    - php5-gd
+    - php5-apcu
+    - apache2-utils
+  notify:
+    - restart nginx
+    - restart php-fpm
+
+- name: APT | VIM 7.4
+  apt_repository: repo=ppa:fcwu-tw/ppa update_cache=yes
+
+- name: install required packages
+  apt: name={{ item }} state=present
+  with_items:
+    - mysql-server
+    - vim-gtk
+    - curl
+    - git
+    - htop
+    - nginx
+    #- apache2
+
+- name: Install required Python packages.
+  easy_install: name={{ item }}
+  with_items:
+    - pip
+    - virtualenv
+
+- name: APT | Install NodeJS PPA Repository
+  apt_repository: repo=ppa:chris-lea/node.js update_cache=yes
+- name: APT | Install NodeJS
+  apt: pkg={{ item }} state=installed
+  with_items: 
+    - nodejs
+
+- name: install composer
+  shell: curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin creates=/usr/local/bin/composer
+  tags: composer
+
+- name: rename composer.phar to composer
+  shell: mv /usr/local/bin/composer.phar /usr/local/bin/composer creates=/usr/local/bin/composer
+  tags: composer
+
+- name: make composer executable
+  shell: chmod a+x /usr/local/bin/composer
+  tags: composer
+
+- name: Install global pm2
+  npm: name=pm2 global=yes
+
+- name: Install global bower
+  npm: name=bower global=yes
+
+- name: Install global grunt
+  npm: name=grunt-cli global=yes
+
+- name: Install global flightplan
+  npm: name=flightplan global=yes
+
+- name: Install python redis pip module
+  pip: name=redis

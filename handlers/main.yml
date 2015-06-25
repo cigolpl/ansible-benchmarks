@@ -1,0 +1,21 @@
+---
+- name: restart apache2
+  service: name=apache2 state=restarted
+- name: restart apache
+  service: name=apache2 state=restarted
+- name: restart nginx
+  action: service name=nginx state=restarted enabled=yes
+- name: restart php-fpm
+  action: service name=php5-fpm state=restarted
+- name: restart mysql
+  action: service name=mysql state=restarted
+- name: restart logstash
+  action: service name=logstash state=restarted
+- name: Restart Elasticsearch
+  service: name=elasticsearch state=restarted
+- name: restart ftp
+  service: name=vsftpd state=restarted
+- name: restart ssh
+  service: name=ssh state=restarted
+- name: restart logstash
+  service: name=logstash state=restarted

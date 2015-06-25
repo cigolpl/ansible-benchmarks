@@ -1,0 +1,10 @@
+---
+spf13_output_file_name: spf13-script.sh
+key: "{{ ansible_env.HOME }}/.ssh/id_rsa"
+version: "master"
+user: vagrant
+git_symfony: git@github.com:cigolpl/symfony-api-benchmark.git
+dir_symfony: /var/www/symfony
+
+git_express: git@github.com:cigolpl/express-api-benchmark.git
+dir_express: /var/www/express

@@ -1,0 +1,38 @@
+---
+- name: Add nginx repo
+  apt_repository: repo=ppa:nginx/stable update_cache=yes
+
+- name: install nginx packages
+  apt: name={{ item }} state=present
+  with_items:
+    - php5
+    - php5-cli
+    - php5-curl
+    - php5-fpm
+    - php5-intl
+    - php5-mcrypt
+    - php5-mysql
+    - php5-gd
+    - php5-apcu
+    - nginx
+  notify:
+    - restart nginx
+    - restart php-fpm
+
+- name: Copy parameter
+  template:
+    src=templates/nginx/upstream.j2
+    dest=/etc/nginx/sites-enabled/upstream
+  notify:
+    - restart nginx
+    - restart php-fpm
+
+- name: Assures include folder exists
+  file: path=/etc/nginx/include/ state=directory
+- name: copy default location
+  template:
+    src=templates/nginx/default_location.j2
+    dest=/etc/nginx/include/default_location
+  notify:
+    - restart nginx
+

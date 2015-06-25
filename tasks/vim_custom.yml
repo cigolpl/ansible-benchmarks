@@ -1,0 +1,26 @@
+---
+- stat: path=~/bootstrap.sh
+  sudo: no
+  register: bt
+  tags: vim
+
+- name: download vim boostrap.sh
+  sudo: no
+  command: curl -O https://bitbucket.org/cigolpl/spf13-vim/raw/3.0/bootstrap.sh chdir=~/
+  when: not bt.stat.exists
+  tags: vim
+
+- name: make bootstrap.sh executable
+  sudo: no
+  shell: chmod a+x ~/bootstrap.sh
+  when: not bt.stat.exists
+  tags: vim
+
+# @TODO remove old rm ~/.spf13 -R
+
+- name: configure vim
+  sudo: no
+  #sudo_user: vagrant
+  shell: ~/bootstrap.sh
+  when: not bt.stat.exists
+  tags: vim

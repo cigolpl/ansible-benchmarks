@@ -1,0 +1,19 @@
+---
+- name: Install required Python packages.
+  easy_install: name={{ item }}
+  with_items:
+    - pip
+    - virtualenv
+  tags: programs
+
+- name: Install python redis pip module (for diamond mainly)
+  pip: name=redis
+  tags: programs
+
+
+- name: Install VIM
+  apt: name={{ item }} state=present
+  with_items:
+    - vim-gtk
+  tags: [ 'vim', 'programs' ]
+

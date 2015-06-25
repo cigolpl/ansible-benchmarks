@@ -1,0 +1,66 @@
+---
+- name: Creates directory expressjs
+  sudo: yes
+  file: path={{ dir_express }} state=directory mode=0775 owner=vagrant group=vagrant
+
+- name: checkout express-api-benchmark 
+  sudo: no
+  git: repo={{ git_express }} dest={{ dir_express }} accept_hostkey=True force=yes
+
+- name: Copy parameter
+  template:
+    src=templates/express/nginx.j2
+    dest=/etc/nginx/sites-enabled/express
+  notify:
+    - restart nginx
+
+- name: Creates directory symfony
+  sudo: yes
+  file: path={{ dir_symfony }} state=directory mode=0775 owner=vagrant group=vagrant
+
+- name: checkout symfony-api-benchmark 
+  sudo: no
+  git: repo={{ git_symfony }} dest={{ dir_symfony }} accept_hostkey=True force=yes
+
+- name: Copy parameter
+  sudo: no
+  template:
+    src=templates/symfony/parameters.j2
+    dest={{ dir_symfony }}/app/config/parameters.yml
+
+- name: Creates cache
+  sudo: no
+  file: path={{ dir_symfony }}/app/cache state=directory mode=0777
+
+- name: Creates spool
+  sudo: no
+  file: path={{ dir_symfony }}/app/spool state=directory mode=0775
+
+- name: Creates logs
+  sudo: no
+  file: path={{ dir_symfony }}/app/logs state=directory mode=0775
+
+- stat: path={{ dir_symfony }}/vendor/autoload.php
+  register: st
+
+
+- name: composer update
+  sudo: no
+  sudo_user: vagrant
+  composer: command=install working_dir={{ dir_symfony }}
+  when: not st.stat.exists
+
+- name: Copy parameter
+  template:
+    src=templates/symfony/nginx.j2
+    dest=/etc/nginx/sites-enabled/symfony
+  notify:
+    - restart nginx
+
+- name: chmod cache
+  sudo: yes
+  command: chmod 777 {{ dir_symfony }}/app/cache -R
+
+- name: chmod logs
+  sudo: yes
+  command: chmod 777 {{ dir_symfony }}/app/logs -R

@@ -1,0 +1,22 @@
+---
+- hosts: all
+  sudo: true
+  vars_files:
+    - defaults/main.yml
+  vars:
+    user: root
+
+  handlers:
+    - include: handlers/main.yml
+
+  tasks:
+    - name: update apt cache
+      apt: update_cache=yes
+
+    - hostname: name=benchmarking
+
+    - include: tasks/projects.yml
+    - include: tasks/programs.yml
+    - include: tasks/nginx.yml
+    - include: tasks/vim.yml
+    - include: tasks/vim_custom.yml
