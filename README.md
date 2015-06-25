@@ -1,6 +1,6 @@
 # ansible-benchmarks
 
-It installs automatically
+It installs automatically:
 - express api version
 - symfony2 with FOSRestBundle
 - nginx with configuration
